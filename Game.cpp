@@ -155,9 +155,6 @@ void Game::Run(){
 		if (gameRunning && !mouseDown) {
 			runSimulation();
 		}
-
-		
-
 		//Framerate limiter
 		SDL_Delay(timeLeft());
 		nextTime += TICK_INTERVAL;
