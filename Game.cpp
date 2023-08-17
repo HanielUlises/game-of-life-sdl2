@@ -1,10 +1,11 @@
 #include "Game.h"
 
-#define TICK_INTERVAL 10
+#define TICK_INTERVAL 1
 static Uint32 nextTime;
 
 Uint32 timeLeft() {
-	Uint32 currentTime = SDL_GetTicks();
+	Uint32 currentTime;
+	currentTime = SDL_GetTicks();
 	if (nextTime <= currentTime) return 0;
 	else return nextTime - currentTime;
 }
@@ -134,7 +135,7 @@ void Game::adjustGrid(){
 }
 
 void Game::Run(){
-	initializeCells(50, 50);
+	initializeCells(100, 100);
 	adjustGrid();
 
 	nextTime = SDL_GetTicks() + TICK_INTERVAL;
@@ -165,22 +166,20 @@ void Game::Run(){
 
 void Game::handleEvents() {
 	SDL_Event ev;
-	SDL_WaitEvent(&ev);
 	
 	while (SDL_PollEvent(&ev)) {
 
 		if (ev.type == SDL_MOUSEMOTION) {
 			SDL_GetMouseState(&mouseX, &mouseY);
 		}
-
+		//Left click for drawing (changing the state of the current cell)
 		if (ev.type == SDL_MOUSEBUTTONDOWN) {
 			if (ev.button.button == SDL_BUTTON_LEFT)
 				mouseDown = true;
 		}
-
+		//Right click to stop drawing
 		if (ev.type == SDL_MOUSEBUTTONUP) {
-			if (ev.button.button == SDL_BUTTON_LEFT)
-				if (mouseDown)
+			if (ev.button.button == SDL_BUTTON_RIGHT)
 					mouseDown = false;
 		}
 
@@ -216,8 +215,8 @@ void Game::handleEvents() {
 			}
 		}
 	}
-	//Clicking changes the state of aw cell
-	if (mouseDown) cells[mouseCellX][mouseCellY].flip();
+	//Clicking creates a new cell
+	if (mouseDown) cells[mouseCellX][mouseCellY].newCell();
 }
 
 void Game::runSimulation(){
